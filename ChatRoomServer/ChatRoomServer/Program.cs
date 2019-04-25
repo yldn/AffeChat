@@ -12,6 +12,39 @@ namespace ChatRoomServer
     {
         static List<Client> clientlist = new List<Client>();
 
+
+
+        /// <summary>
+        /// boardcasting 
+        /// </summary>
+        /// <param name="message"></param>
+        public static void BoardcastMeseage(string message)
+        {
+            var notConnectedList = new List<Client>();
+
+            foreach(var client in clientlist)
+            {
+                Console.WriteLine("client connected"+ client.Connected);
+
+                if (client.Connected)
+                {
+                    client.SendMessage(message);
+                }
+                else
+                {
+                    notConnectedList.Add(client);
+                }
+            }
+
+            //移除所有断开连接的客户端
+            foreach (var temp in notConnectedList)
+            {
+                clientlist.Remove(temp);
+            }
+
+        }
+        
+
         static void Main(string[] args)
         {
             Socket tcpServer= new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -29,11 +62,7 @@ namespace ChatRoomServer
                 //add to the list 
                 clientlist.Add(client);
             }
-            
-
-
-            
-
         }
+
     }
 }
